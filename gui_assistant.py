@@ -1,3 +1,4 @@
+from google.genai.errors import APIError
 import os
 import threading
 import tkinter as tk
@@ -56,6 +57,12 @@ def consult_gemini(message):
     try:
         answer = chat.send_message(message)
         answer_text = answer.text
+    except APIError as e:
+        if e.code == 503:
+            answer_text = '[Le Petit Mépris informa: Nuestros servidores están colapsados de tanta gente vulgar intentando entrar. Vuelva a intentarlo en unos instantes si le queda paciencia.]'
+            
+        else:
+            answer_text = f'[Aviso del establecimiento: Error {e.code} ({e.message})]'
     except Exception as e:
         answer_text = f'[Error del asistente]: No le ha apetecido contestarte. \nEs broma. Error: {e}.'
 
